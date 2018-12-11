@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #Author: Mohsin Khan
-#insert API for MongoDB using PyMongo driver
+#Main page for Image SVM Applet. Backend MongoDB using PyMongo driver
 
 import cgi
 import cgitb
