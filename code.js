@@ -1,51 +1,113 @@
-var iterator=1;
-text.forEach(function(sample){
-  document.getElementById(iterator).innerHTML += "Randomly Selected Cell "+ iterator + ": <br>";
-  document.getElementById(iterator).innerHTML += '<button type="button" class="btn btn-warning" onClick=submitCell(' + iterator + ')>Test Cell</button><br/><br/>';
-  for (var key in sample){
-    document.getElementById(iterator).innerHTML +=key + ": " +sample[key]+"<br>";
-  }
-  if(text[iterator-1]['class']=='0'){
-    document.getElementById(iterator).style.backgroundColor = "#27ae60";
-    document.getElementById(iterator).innerHTML += "<H2>BENIGN</H2>";}
+var canvas = document.getElementById('paint');
+var ctx = canvas.getContext('2d');
 
-  else{
-    document.getElementById(iterator).style.backgroundColor = "#e74c3c";
-    document.getElementById(iterator).innerHTML += "<H2>MALIGNANT</H2>";
-  }
+var sketch = document.getElementById('sketch');
+var sketch_style = getComputedStyle(sketch);
+canvas.width = 100;
+canvas.height = 100;
 
-  iterator+=1;
+var mouse = {x: 0, y: 0};
 
-});
-function submitRecord(i){
-  i=i-1
-  console.log(i);
-  console.log(text[i]);
-}
-function submitCell(i){
-  i=i-1;
-  document.getElementById("response").innerHTML= "<h2>Neural Network's Prediction:</h2>" + "<h2></h2><img class='loader' src=./loader.gif>"
+var ctx_is_done = false;
+var ex_shown=false;
+var last_data;
+var last_dataURL;
+/* Mouse Capturing Work */
+canvas.addEventListener('mousemove', function(e) {
+  mouse.x = e.pageX - this.offsetLeft;
+  mouse.y = e.pageY - this.offsetTop;
+}, false);
+
+/* Drawing on Paint App */
+ctx.lineJoin = 'round';
+ctx.lineCap = 'round';
+
+ctx.strokeStyle = "white";
+function setColor(colour){ctx.strokeStyle = colour;}
+
+ctx.lineWidth = 10;
+function setSize(size){ctx.lineWidth = size;}
+
+function testSVM(){
+  document.getElementById("extra").innerHTML= "<h2>SVM Guess: </h2>" + "<img class='loader' src=./loader.gif>"
+  var dataURL = canvas.toDataURL();
+  last_dataURL = dataURL;
+
   $.ajax({
     type: "POST",
-    url: "./NN_query.py",
+    url: "./query/",
     data: {
-      thickness: text[i]["thickness"],
-      size: text[i]["size"],
-      shape: text[i]["shape"],
-      adhesion: text[i]["adhesion"],
-      single_size: text[i]["single_size"],
-      nuclei: text[i]["nuclei"],
-      chromatin: text[i]["chromatin"],
-      nucleoli: text[i]["nucleoli"],
-      mitoses: text[i]["mitoses"],
-      class: text[i]["class"],
+       img: dataURL
     },
     success: function (data) {
          console.log(data);
-         document.getElementById("response").innerHTML="<h2>Neural Network's Prediction:</h2>" + "<h2>" + data+"</h2><img class='loader'>";
+         document.getElementById("extra").innerHTML="<h2>SVM Guess: </h2>" + "<h2>" + data+'</h2>Is this answer: <br/><button onclick=submitCanvas(1); type="button" class="btn btn-success">Correct</button>&nbsp;or&nbsp;<button onclick=submitCanvas(0); type="button" class="btn btn-danger">Wrong</button>';
+         last_data=data;
      }
-    }).done(function(o) {
-    console.log(text[i]);
-    console.log('submitted to server.');
-    });
+  }).done(function(o) {
+    console.log(dataURL);
+    console.log('saved');
+    ctx_is_done = true;
+  });
   }
+  function submitCanvas(truth_state){
+    var dataURL = last_dataURL;
+    if (truth_state==0){
+      var correct_label = prompt("Which Digit did you draw?", "Enter a digit from 0 - 9");
+      if (correct_label != null) {
+          last_data = parseInt(correct_label);
+      }
+    }
+    $.ajax({
+      type: "POST",
+      url: "./mongoSubmit/",
+      data: {
+         img: dataURL,
+         correct: truth_state,
+         prediction: parseInt(last_data)
+      },
+      success: function (data) {
+           console.log(data);
+           document.getElementById("extra").innerHTML="<h2>SVM Guess: </h2><h3>Data Submitted to MongoDB for Training!</h3><br/><h4>Thank you! Feel free to drawn again</h4>";
+       }
+    }).done(function(o) {
+      console.log(dataURL);
+      console.log('saved');
+      ctx_is_done = true;
+    });
+    }
+canvas.addEventListener('mousedown', function(e) {
+    if (ctx_is_done == true){
+      ctx_is_done = false;
+      clearCanvas();
+    }
+    ctx.beginPath();
+    ctx.moveTo(mouse.x, mouse.y);
+    canvas.addEventListener('mousemove', onPaint, false);
+    }, false);
+
+canvas.addEventListener('mouseup', function() {
+    canvas.removeEventListener('mousemove', onPaint, false);
+    }, false);
+
+var onPaint = function() {
+    ctx.lineTo(mouse.x, mouse.y);
+    ctx.stroke();
+    };
+
+function clearCanvas(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  document.getElementById("extra").innerHTML="<h2>SVM Guess: </h2>";
+  }
+
+function toggleExample(){
+  if(ex_shown==false){
+    $("#example_alert").fadeIn(500);
+    ex_shown=true;
+  }
+  else{
+    $("#example_alert").fadeOut(500);
+    ex_shown=false;
+  }
+
+}
