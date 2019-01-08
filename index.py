@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #Author: Mohsin Khan
-#insert API for MongoDB using PyMongo driver
+#Main page for Image SVM Applet. Backend MongoDB using PyMongo driver
 
 import cgi
 import cgitb
@@ -11,7 +11,7 @@ import pprint
 import datetime
 print("content-type: text/html\r\n\r\n")
 cgitb.enable()
-#predefined mongo db and collection for the apidb
+#predefined mongo db and collection
 DATABASE='apidb'
 COLLECTION='digits'
 
