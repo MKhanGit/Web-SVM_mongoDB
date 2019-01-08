@@ -1,97 +1,116 @@
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
 
 <head>
+  <meta charset="utf-8">
+  <title></title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-  <head>
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="Machine, Learing, Artificial, Intelligence, interactive, tutorials, Neural, Network, SVM, Support Vector Machine, interactive, tutorials">
-    <meta name="description" content="Explore and learn Machine Learning using our interactive Projects and Demos. View Full Source code and experiment with different Machine Learning technologies to expand your skillset and career opportunities.">
-    <meta name="author" content="Mohsin Khan">
-    <meta name="revisit-after" content="2 days">
-    <meta name="distribution" content="web">
-    <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    .samples {
+      color: white;
+      border-color: black;
+      display: inline-block;
+      padding: 15px;
+      border-radius: 10%;
+      border-width: 3px;
+      border-style: dashed;
+    }
 
+    .spacer {
+      margin: 5%;
+    }
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/favicon/site.webmanifest">
-    <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#353b48">
-    <link rel="shortcut icon" href="/favicon/favicon.ico">
-    <meta name="msapplication-TileColor" content="#353b48">
-    <meta name="msapplication-config" content="/favicon/browserconfig.xml">
-    <meta name="theme-color" content="#353b48">
+    .loader {
 
-
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/main.css" />
-    <link rel="stylesheet" type="text/css" href="/css/style.css" />
-    <link rel="stylesheet" type="text/css" href="./styles.css" />
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/popper.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/global.js"></script>
-
-  </head>
-
-  <body>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-lg-12">&nbsp;</div>
-      </div>
+      width: auto;
+      padding: 0px;
+      margin: 0px;
+      height: 75px;
+    }
 
 
-      <div id="sketch">
-        <canvas id="paint"></canvas>
-      </div>
+    #response {
+      min-height: 105px;
+      padding: 0px;
+      margin: 0px;
+      max-height: 115px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row" id="intro">
 
 
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="SVM_result" id="extra">
-            <h2>SVM Guess: </h2>
+      <center>
+        <div class="row">
+          <div class="col" id="response">
+            <h2>Neural Network Prediction: </h2>
             <h2></h2>
+            <img class='loader'>
+          </div>
+
+        </div>
+        <div class="row" id="refresh">
+          <div class="col">
+            <h3>Randomly Selected Cells: </h3>
           </div>
         </div>
-      </div>
+        <div class="row" id="demo">
+          <div class="samples col" id="1"> </div>
+          <div class="samples col" id="2"> </div>
+          <div class="samples col" id="3"> </div>
+          <div class="samples col" id="4"> </div>
+          <div class="samples col" id="5"> </div>
+          <h2><button type="button" class="btn btn-success" onclick="location.reload();">Select New Random Cells</button></h2>
+        </div>
 
+        <div class="row">
+          <div class="col-lg-2">&nbsp;</div>
 
-      <div class="buttonblock">
+          <div class="col-lg-8">
+            <div class='jumbotron'>
+              <pre><a href="https://github.com/MKhanGit/Neural-Network-Cancer-Classifer_mongoDB" target="_blank">Click here for source code on GitHub</a></pre>
+              <p>
+                This page connects to a Neural Network which has been trained to distinguish between benign and malignant breast cancer cells based on a set of 9 measured features. The classifier predicts class '0' for benign and class '1' for
+                malignant.
+                <br>
+                <br>Five cell samples have been selected at random for you to test the network with. As a user, you can clearly see which cells are benign and maligant. When the "Test Cell" button is clicked, the Neural Network is fed the 9
+                measurement
+                features
+                of the cell, but it is NOT told which class the cell belongs to. The network will then return a prediction for which class the cell belongs to (Benign or Malignant).<br>
+              </p>
+              <div class="row">
+                <div class="col note"><code>Note: None of these randomly selected cell records have been shown to the neural network before, which demonstrates the network's ability to create a generalized solution to this classifcation problem.
+                    Accuracy for the model is at ~98% based on ~700 training records.</code></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-2">&nbsp;</div>
 
-        <button onclick="testSVM();" type="button" class="btn btn-primary">Query SVM</button>&nbsp;
-        <button onclick="clearCanvas();" type="button" class="btn btn-outline-secondary">Reset</button>
+        </div>
 
-      </div>
-      &nbsp;
+      </center>
+
 
       <div class="row">
-        <div class="col-lg-2">&nbsp;</div>
-
-        <div class="col-lg-8">
-
-          <p class="font-italic text-sm-left"><pre>
-This page is the front-end for a Support Vector Machine (SVM), a Machine Learning algorithm which analyzes the images drawn to the canvas.
-Try to draw a digit from 0-9, then Query the SVM to see if it can recognize the image! You can also submit your image to be added to the training data which improves the accuracy of the algorithm.</pre>
-          </p>
-          <button class="btn btn-outline-secondary" onclick="toggleExample();"> Click Here to see Sample Images</button>
-          <div class="alert alert-success collapse" role="alert" id="example_alert">
-            <img src="./examples/0.png">
-            <img src="./examples/1.png">
-            <img src="./examples/2.png">
-            <img src="./examples/3.png">
-            <img src="./examples/4.png">
-            <img src="./examples/5.png">
-            <img src="./examples/6.png">
-            <img src="./examples/7.png">
-            <img src="./examples/8.png">
-            <img src="./examples/9.png">
-          </div>
+        <div class="col spacer">
+          &nbsp;
         </div>
-        <div class="col-lg-2">&nbsp;</div>
       </div>
-      <script src="./code.js"></script>
-  </body>
+    </div>
+
+
+    <script src="./code.js"></script>
+
+</body>
 
 </html>
